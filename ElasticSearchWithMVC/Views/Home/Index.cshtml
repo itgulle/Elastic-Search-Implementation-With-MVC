@@ -1,0 +1,147 @@
+﻿@{
+    ViewBag.Title = "Implement";
+}
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<div class="jumbotron">
+    <h2>Using Elastic Search With ASP.NET MVC</h2>
+    <p class="lead">Reading And Writing Documents With Single Document APIs In Elastic Search.</p>
+    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Setup</h2>
+        <p>In order to perform below operation(s) which will read and write in Elastic search, you need to setup Elastic search on your machine.</p>
+        <p>let’s start with setting up Elastic search and click button below.</p>
+        <p><b>Note :</b> If you already setup Elastic search and single document API is working, then you don't need to do this step.</p>
+
+        <p><a class="btn btn-default" href="https://www.c-sharpcorner.com/article/how-to-configure-elastic-search-on-windows/" target="_blank">Elasticsearch setup &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Create document in Elastic Search</h2>
+        <p>Click on Create button below. You will see a form with three input field(s). Enter values in these text boxes and press submit button.</p>
+        <p><a id="create-submit-button" class="btn btn-default">Create &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Search document in Elastic Search</h2>
+        <p>Click on Search button below. You will see a form with one input field. Enter values in text box and press search button.</p>
+        <p><a id="search-submit-button" class="btn btn-default">Search &raquo;</a></p>
+    </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br>
+<div style="display: none" id="create-document-form">
+    <h4>Please enter below details and press submit to create entry in Elastic Search.</h4>
+    <br/>
+    Project Code:<br>
+    <input type="text" name="ProjectCode" id="projectCode">*
+    <br>
+    Project Name:<br>
+    <input type="text" style="width: 500px;" name="ProjectName" id="projectName">*
+    <br>
+    Nature of Industry:<br>
+    <input type="text" style="width: 500px;" name="NatureofIndustry" id="natureofIndustry">*
+    <br>
+    <br>
+    <input id="btnsubmit" type="submit">
+</div>
+<div style="display: none" id="search-document-form">
+    <h4>Please enter project code and press submit to search document(s) in Elastic Search.</h4>
+    <br />
+    Project Code:<br>
+    <input type="text" name="ProjectCode" id="projectcode-search">*
+    <br>
+    <input id="btnsearch" type="submit">
+    <div class="table-responsive" id="search-table"></div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $("#create-submit-button").on("click",
+            function() {
+                $("#create-document-form").show();
+                $("#search-document-form").hide();
+            });
+        $("#search-submit-button").on("click",
+            function () {
+                $("#create-document-form").hide();
+                $("#search-document-form").show();
+            });
+
+        $("#btnsubmit").on("click", function () {
+
+            if ($("#projectCode").val() === "" || $("#projectName").val() === "" || $("#natureofIndustry").val() === "") {
+                alert("Provide all details to create elastic search document !");
+            }
+            else {
+
+                var obj = {};
+                obj.projectCode = $.trim($("#projectCode").val());
+                obj.projectName = $.trim($("#projectName").val());
+                obj.natureofIndustry = $.trim($("#natureofIndustry").val());
+
+                var apiUrl = '@Url.Action("Create")';
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: apiUrl,
+                    dataType: "json",
+                    data: JSON.stringify(obj),
+                    crossDomain: true,
+                    success: function (data) {
+                        var response = data.props;
+                        console.log(response);
+                        if (response.length <= 0) {
+                            alert("Error occured while creating document!!");
+                        } else {
+                            alert("Document created successfully with project code " + response["projectcode"]);
+                            $("#projectCode").val('');
+                            $("#projectName").val('');
+                            $("#natureofIndustry").val('');
+                        }
+                    }
+                });
+            }
+        });
+
+        $("#btnsearch").on("click", function () {
+
+            if ($("#projectcode-search").val() === "") {
+                alert("Enter product code to search document(s) in elastic search !");
+            }
+            else {
+
+                var obj = {};
+                obj.projectCode = $.trim($("#projectcode-search").val());
+
+                var apiUrl = '@Url.Action("Search")';
+
+                $.ajax({
+                    type: "POST",
+                    contentType: 'application/json',
+                    url: apiUrl,
+                    dataType: "json",
+                    data: JSON.stringify(obj),
+                    crossDomain: true,
+                    success: function (data) {
+                        var response = data.props.data;
+                        if (response.length <= 0) {
+                            alert("No Data Found!!");
+                        } else {
+                            var table = $("<table/>").addClass('table');
+                            $.each(response, function(rowIndex, r) {
+                                var row = $("<tr/>");
+                                $.each(r, function(colIndex, c) { 
+                                    row.append($("<t"+(rowIndex === 0 ?  "h" : "d")+"/>").text(c));
+                                });
+                                table.append(row);
+                            });
+                            $("#search-table").html(table);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
