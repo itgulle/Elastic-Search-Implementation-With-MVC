@@ -46,6 +46,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.0.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.0.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac.Integration.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.Mvc5.4.0.2\lib\net45\Autofac.Integration.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.5.1\lib\net461\Elasticsearch.Net.dll</HintPath>
     </Reference>
@@ -145,12 +151,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Connector\ElasticSearchConnection.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="DataModule.cs" />
+    <Compile Include="Factories\CreateFactoryWithNewES.cs" />
+    <Compile Include="Factories\IRepository.cs" />
     <Compile Include="Factories\ISearchFactory.cs" />
+    <Compile Include="Factories\IService.cs" />
     <Compile Include="Factories\SearchFactory.cs" />
     <Compile Include="Factories\CreateFactory.cs" />
     <Compile Include="Factories\ICreateFactory.cs" />

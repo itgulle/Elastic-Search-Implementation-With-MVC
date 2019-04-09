@@ -10,10 +10,10 @@ namespace ElasticSearchWithMVC.Controllers
     private ICreateFactory _iCreateFactory;
     private ISearchFactory _iSearchFactory;
 
-    public HomeController()
+    public HomeController(ICreateFactory iCreateFactory, ISearchFactory iSearchFactory)
     {
-      _iCreateFactory = new CreateFactory();
-      _iSearchFactory = new SearchFactory();
+      _iCreateFactory = iCreateFactory;
+      _iSearchFactory = iSearchFactory;
     }
     public ActionResult Index()
     {
